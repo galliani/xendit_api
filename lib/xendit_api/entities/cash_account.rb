@@ -8,6 +8,7 @@ module XenditApi
 
 		  def initialize(attributes = {})
 		    set_attributes(attributes)
+		    @balance_cents = (balance.to_s + '00').to_i
 		  end
 		end
 	end

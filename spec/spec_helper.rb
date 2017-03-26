@@ -2,6 +2,7 @@ $LOAD_PATH.unshift File.expand_path("../../lib", __FILE__)
 require "xendit_api"
 require 'webmock/rspec'
 require 'capybara/rspec'
+require 'json'
 WebMock.disable_net_connect!
 
 RSpec.configure do |config|
