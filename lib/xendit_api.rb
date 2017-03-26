@@ -1,5 +1,6 @@
 require "xendit_api/version"
 require "xendit_api/client"
+require "xendit_api/entities/base"
 
 module XenditApi
   BASE_URL = 'https://api.xendit.co/'

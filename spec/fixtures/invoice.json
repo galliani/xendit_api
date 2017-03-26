@@ -1,0 +1,51 @@
+{
+  "id": "579c8d61f23fa4ca35e52da4",
+  "user_id": "5781d19b2e2385880609791c",
+  "external_id": "invoice_123124123",
+  "is_high": true,
+  "status": "PENDING",
+  "merchant_name": "Xendit",
+  "amount": 50000,
+  "billable_amount": 54000,
+  "taxable_amount": 4000,
+  "received_amount": 47500,
+  "payer_email": "albert@xendit.co",
+  "description": "This is a description",
+  "invoice_url": "https://api.xendit.co/web/invoices/57b56460b65d1a6a0f0014be",
+  "xendit_fee_amount": 500,
+  "expiry_date": "2016-08-01T11:20:01.017Z",
+  "taxes": [
+    {
+      "percentage": 0.1,
+      "name": "VAT"
+    },
+    {
+      "percentage": -0.02,
+      "name": "PPH"
+    }
+  ],
+  "fees": [
+    {
+      "percentage": 0.04,
+      "xendit_user_id": "XENDIT_FEES",
+      "name": "Agent Fee"
+    }
+  ],
+  "available_banks": [
+    {
+      "bank_code": "BCA",
+      "collection_type": "POOL",
+      "bank_account_number": 1000008,
+      "transfer_amount": 54000
+    },
+    {
+      "bank_code": "MANDIRI",
+      "collection_type": "UNIQUE",
+      "bank_branch": "KCP Jkt Mayestik",
+      "bank_account_number": "1261006593021",
+      "account_holder_name": "SENDIRI DIGITAL INDO",
+      "transfer_amount": 54002,
+      "identity_amount": 2
+    }
+  ]
+}
