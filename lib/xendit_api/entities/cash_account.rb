@@ -7,7 +7,7 @@ module XenditApi
   		attribute :balance_cents,	 :integer
 
 		  def initialize(attributes = {})
-		    set_attributes(attributes)
+		    set_attributes(attributes, true)
 		    @balance_cents = (balance.to_s + '00').to_i
 		  end
 		end

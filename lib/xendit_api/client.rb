@@ -16,14 +16,27 @@ module XenditApi
     def get_cash_balance
     	return nil if @api_key.empty?
 
-			response = make_request('balance', {})
+			response = make_request('balance', 'get', {})
 
-			JSON.parse(response.body)
+			attrs = JSON.parse(response.body)
+      XenditApi::Entities::CashAccount.new(attrs)
+    end
+
+    def get_bank_account_data(account_number:, bank_code:)
+      return nil if @api_key.empty?
+
+      response = make_request(
+        'bank_account_data_requests', 
+        'post', 
+        { bank_account_number: account_number, bank_code: bank_code }
+      )
+
+      JSON.parse(response.body)
     end
 
     private
 
-    def make_request(endpoint, payload = {})
+    def make_request(endpoint, method, payload = {})
       # start setting up connections
       @connection = Faraday.new(url: XenditApi::BASE_URL) do |faraday|
         faraday.response :logger                  # log requests to STDOUT
@@ -34,10 +47,14 @@ module XenditApi
       # finish setting up connection
 
       # make the request for the transaction
-      @connection.post do |req|
-        req.url endpoint
-        req.body = payload
-      end      	
+      if method == 'post'
+        @connection.post do |req|
+          req.url endpoint
+          req.body = payload
+        end
+      else
+        @connection.get endpoint      
+      end
     end
 	end
 end
