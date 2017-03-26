@@ -5,7 +5,7 @@ describe XenditApi do
     expect(XenditApi::VERSION).not_to be nil
   end
 
-  it "does something useful" do
-    expect(false).to eq(true)
+  it 'has the Xendit API base url set' do
+    expect(XenditApi.base_url).to eq XenditApi::BASE_URL
   end
 end

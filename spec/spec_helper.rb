@@ -25,5 +25,5 @@ RSpec.configure do |config|
   #       body: '{"status": 200, "success": true, "result": []}',
   #       headers: {}
   #      )
-  end  
+  # end  
 end
