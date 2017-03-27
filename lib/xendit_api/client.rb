@@ -53,11 +53,27 @@ module XenditApi
         description: description, 
         amount: amount
       }
-      
+
       response = make_request('v2/invoices/', 'post', data)
 
       attrs = JSON.parse(response.body)
       XenditApi::Entities::Invoice.new(attrs)
+    end
+
+    def create_fixed_virtual_account(external_id:, bank_code:, name:, virtual_account_number:)
+      return nil if @api_key.empty?
+
+      data = { 
+        external_id: external_id, 
+        bank_code: bank_code, 
+        name: name, 
+        virtual_account_number: virtual_account_number
+      }
+      
+      response = make_request('callback_virtual_accounts', 'post', data)
+
+      attrs = JSON.parse(response.body)
+      XenditApi::Entities::VirtualAccount.new(attrs)
     end
 
     private

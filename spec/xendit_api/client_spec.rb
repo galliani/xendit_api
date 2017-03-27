@@ -86,7 +86,7 @@ module XenditApi
             .to_return(:status => 201, :body => data, :headers => {})     
         end
 
-        it 'should return the invoice fetched by the id' do
+        it 'should return the invoice created by the request' do
           api_key = 'xnd_development_P4qDfOss0OCpl8RSiCwZ3jw=='
           client =  Client.new(api_key: api_key)
 
@@ -113,6 +113,49 @@ module XenditApi
             description: parsed_data['description'], 
             amount: parsed_data['amount']
           )          
+
+          expect(result).to eq nil
+        end
+      end    
+    end
+
+    describe '.create_fixed_virtual_account' do
+      let(:data) { read_file_fixture('virtual_account.json') }
+      let(:parsed_data) { JSON.parse(data) }
+
+      context 'valid request' do
+        before do          
+          @stub = stub_request(:post, "https://api.xendit.co/callback_virtual_accounts")
+            .to_return(:status => 201, :body => data, :headers => {})     
+        end
+
+        it 'should return the virtual_account created by the request' do
+          api_key = 'xnd_development_P4qDfOss0OCpl8RSiCwZ3jw=='
+          client =  Client.new(api_key: api_key)
+
+          result = client.create_fixed_virtual_account(
+            external_id: parsed_data['external_id'], 
+            bank_code: parsed_data['bank_code'], 
+            name: parsed_data['name'], 
+            virtual_account_number: parsed_data['account_number']
+          )
+
+          expect(result.class.name).to eq 'XenditApi::Entities::VirtualAccount'
+          expect(result.account_number).to eq parsed_data['account_number']
+          expect(@stub).to have_been_requested
+        end
+      end
+
+      context 'no token provided' do
+        it 'should return authentication failed as the response' do
+          client =  Client.new(api_key: '')
+
+          result = client.create_fixed_virtual_account(
+            external_id: parsed_data['external_id'], 
+            bank_code: parsed_data['bank_code'], 
+            name: parsed_data['name'], 
+            virtual_account_number: parsed_data['account_number']
+          )        
 
           expect(result).to eq nil
         end
