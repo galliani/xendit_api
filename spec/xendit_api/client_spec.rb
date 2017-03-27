@@ -44,6 +44,81 @@ module XenditApi
       end    
     end
 
+    describe '.get_invoice' do
+      context 'valid request' do
+        before do
+          data = read_file_fixture('invoice.json')
+          @parsed_data = JSON.parse(data)
+          @stub = stub_request(:get, "https://api.xendit.co/v2/invoices/" + @parsed_data['id'])
+            .to_return(:status => 200, :body => data, :headers => {})     
+        end
+
+        it 'should return the invoice fetched by the id' do
+          api_key = 'xnd_development_P4qDfOss0OCpl8RSiCwZ3jw=='
+          client =  Client.new(api_key: api_key)
+
+          result = client.get_invoice(id: @parsed_data['id'])
+
+          expect(result.class.name).to eq 'XenditApi::Entities::Invoice'
+          expect(result.amount).to eq @parsed_data['amount']
+          expect(@stub).to have_been_requested
+        end
+      end
+
+      context 'no token provided' do
+        it 'should return authentication failed as the response' do
+          client =  Client.new(api_key: '')
+
+          result = client.get_invoice(id: 'random_id')
+
+          expect(result).to eq nil
+        end
+      end    
+    end
+
+    describe '.create_invoice' do
+      let(:data) { read_file_fixture('invoice.json') }
+      let(:parsed_data) { JSON.parse(data) }
+
+      context 'valid request' do
+        before do          
+          @stub = stub_request(:post, "https://api.xendit.co/v2/invoices/")
+            .to_return(:status => 201, :body => data, :headers => {})     
+        end
+
+        it 'should return the invoice fetched by the id' do
+          api_key = 'xnd_development_P4qDfOss0OCpl8RSiCwZ3jw=='
+          client =  Client.new(api_key: api_key)
+
+          result = client.create_invoice(
+            external_id: parsed_data['external_id'], 
+            payer_email: parsed_data['payer_email'], 
+            description: parsed_data['description'], 
+            amount: parsed_data['amount']
+          )
+
+          expect(result.class.name).to eq 'XenditApi::Entities::Invoice'
+          expect(result.amount).to eq parsed_data['amount']
+          expect(@stub).to have_been_requested
+        end
+      end
+
+      context 'no token provided' do
+        it 'should return authentication failed as the response' do
+          client =  Client.new(api_key: '')
+
+          result = client.create_invoice(
+            external_id: parsed_data['external_id'], 
+            payer_email: parsed_data['payer_email'], 
+            description: parsed_data['description'], 
+            amount: parsed_data['amount']
+          )          
+
+          expect(result).to eq nil
+        end
+      end    
+    end
+
     describe '.get_bank_account_data' do
       context 'valid request' do
         before do

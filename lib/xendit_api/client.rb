@@ -34,6 +34,32 @@ module XenditApi
       JSON.parse(response.body)
     end
 
+    def get_invoice(id:)
+      return nil if @api_key.empty?
+
+      path = 'v2/invoices/' + id.to_s
+      response = make_request(path, 'get')
+
+      attrs = JSON.parse(response.body)
+      XenditApi::Entities::Invoice.new(attrs)
+    end
+
+    def create_invoice(external_id:, payer_email:, description:, amount:)
+      return nil if @api_key.empty?
+
+      data = { 
+        external_id: external_id, 
+        payer_email: payer_email, 
+        description: description, 
+        amount: amount
+      }
+      
+      response = make_request('v2/invoices/', 'post', data)
+
+      attrs = JSON.parse(response.body)
+      XenditApi::Entities::Invoice.new(attrs)
+    end
+
     private
 
     def make_request(endpoint, method, payload = {})

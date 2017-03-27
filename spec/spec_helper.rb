@@ -3,6 +3,8 @@ require "xendit_api"
 require 'webmock/rspec'
 require 'capybara/rspec'
 require 'json'
+require 'support/fixture_support'
+
 WebMock.disable_net_connect!
 
 RSpec.configure do |config|
@@ -11,6 +13,7 @@ RSpec.configure do |config|
 	config.filter_run :focus 
   config.order = 'random' 
 
+  config.include FixtureSupport
   # Stubs
   # config.before(:each) do
   #   stub_request(:get, 'https://sheetsu.com/apis/foo')
