@@ -154,7 +154,7 @@ module XenditApi
         faraday.use FaradayMiddleware::RaiseHttpException
       end
       
-      @connection.token_auth @token 
+      @connection.basic_auth @token 
       # finish setting up connection      
     end
 
