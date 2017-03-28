@@ -1,5 +1,6 @@
 require "base64"
 require "faraday"
+require "faraday_middleware"
 require "json"
 
 module XenditApi
@@ -150,6 +151,7 @@ module XenditApi
       @connection = Faraday.new(url: XenditApi::BASE_URL) do |faraday|
         faraday.response :logger                  # log requests to STDOUT
         faraday.adapter  Faraday.default_adapter  # make requests with Net::HTTP
+        faraday.use FaradayMiddleware::RaiseHttpException
       end
       
       @connection.token_auth @token 
