@@ -11,6 +11,7 @@ module XenditApi
     	# Xendit requires us to use token in every request
     	# This is how to get the token, appending colon at the end then encode it
       @token = Base64.encode64(api_key + ':')
+      setup_connection
     end
 
     def get_cash_balance
@@ -87,7 +88,7 @@ module XenditApi
       XenditApi::Entities::Disbursement.new(attrs)
     end
 
-    def create_disbursement(external_id:, bank_code:, account_holder_name:, account_number:, description:, amount:)
+    def create_disbursement(idempotency_key: nil, external_id:, bank_code:, account_holder_name:, account_number:, description:, amount:)
       return nil if @api_key.empty?
 
       data = { 
@@ -99,7 +100,13 @@ module XenditApi
         amount: amount
       }
 
-      response = make_request('disbursements', 'post', data)
+      if idempotency_key.nil?
+        headers = {}
+      else
+        headers = { 'X-IDEMPOTENCY-KEY' => idempotency_key } 
+      end
+
+      response = make_request('disbursements', 'post', data, headers)
 
       attrs = JSON.parse(response.body)
       XenditApi::Entities::Disbursement.new(attrs)
@@ -138,25 +145,22 @@ module XenditApi
 
     private
 
-    def make_request(endpoint, method, payload = {})
-      # start setting up connections
+    def setup_connection
+     # start setting up connections
       @connection = Faraday.new(url: XenditApi::BASE_URL) do |faraday|
         faraday.response :logger                  # log requests to STDOUT
         faraday.adapter  Faraday.default_adapter  # make requests with Net::HTTP
       end
-			
-			@connection.token_auth @token 
-      # finish setting up connection
+      
+      @connection.token_auth @token 
+      # finish setting up connection      
+    end
 
+    def make_request(endpoint, method, payload = {}, headers = {})
       # make the request for the transaction
-      if method == 'post'
-        @connection.post do |req|
-          req.url endpoint
-          req.body = payload
-        end
-      else
-        @connection.get endpoint      
-      end
+      return @connection.post(endpoint, payload, headers) if method == 'post'
+
+      @connection.get endpoint
     end
 	end
 end

@@ -168,11 +168,34 @@ module XenditApi
 
       context 'valid request' do
         before do          
-          @stub = stub_request(:post, "https://api.xendit.co/disbursements")
-            .to_return(:status => 201, :body => data, :headers => {})     
+          @stub_with_header = stub_request(:post, "https://api.xendit.co/disbursements")
+            .with(headers:{ 'X-IDEMPOTENCY-KEY' => 'uniqueUID' })          
+            .to_return(:status => 201, :body => data, :headers => {})
+
+          @stub_without_header = stub_request(:post, "https://api.xendit.co/disbursements")
+            .to_return(:status => 201, :body => data, :headers => {})                 
         end
 
-        it 'should return the disbursement created by the request' do
+        it 'should be able to create disbursement with idempotency_key' do
+          api_key = 'xnd_development_P4qDfOss0OCpl8RSiCwZ3jw=='
+          client =  Client.new(api_key: api_key)
+
+          result = client.create_disbursement(
+            idempotency_key: 'uniqueUID',
+            external_id: parsed_data['external_id'], 
+            bank_code: parsed_data['bank_code'], 
+            account_holder_name: parsed_data['account_holder_name'], 
+            account_number: parsed_data['account_number'],
+            description: parsed_data['description'],
+            amount: parsed_data['amount']
+          )
+
+          expect(result.class.name).to eq 'XenditApi::Entities::Disbursement'
+          expect(result.amount).to eq parsed_data['amount']
+          expect(@stub_with_header).to have_been_requested
+        end
+
+        it 'is also valid to create disbursement WITHOUT idempotency_key' do
           api_key = 'xnd_development_P4qDfOss0OCpl8RSiCwZ3jw=='
           client =  Client.new(api_key: api_key)
 
@@ -187,8 +210,9 @@ module XenditApi
 
           expect(result.class.name).to eq 'XenditApi::Entities::Disbursement'
           expect(result.amount).to eq parsed_data['amount']
-          expect(@stub).to have_been_requested
-        end
+          expect(@stub_without_header).to have_been_requested
+          expect(@stub_with_header).to_not have_been_requested
+        end        
       end
 
       context 'no token provided' do
