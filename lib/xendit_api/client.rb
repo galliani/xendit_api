@@ -153,8 +153,8 @@ module XenditApi
         faraday.adapter  Faraday.default_adapter  # make requests with Net::HTTP
         faraday.use FaradayMiddleware::RaiseHttpException
       end
-      
-      @connection.basic_auth @token 
+
+      @connection.authorization(:basic, token: @token)
       # finish setting up connection      
     end
 
