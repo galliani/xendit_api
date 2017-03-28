@@ -17,7 +17,7 @@ module XenditApi
   		attribute :description,	  				:string
   		attribute :invoice_url,  					:string
   		attribute :xendit_fee_amount,	  	:integer
-  		attribute :expiry_date,	  				:time
+  		attribute :expiry_date,	  				:string
   		attribute :taxes,	  							:json
   		attribute :fees,	  							:json
   		attribute :available_banks,	  		:json

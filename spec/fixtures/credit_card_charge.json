@@ -1,0 +1,11 @@
+{
+  "id": "5872f07cdd75f9e1722f850c",
+  "external_id": "Xendit",
+  "capture_amount": 17000,
+  "business_id": "5785e6334d7b410667d355c4",
+  "merchant_reference_code": "5785e6334d7b410667d355c4-Xendit",
+  "merchant_id": "your_business",
+  "created": "2017-01-09T02:07:56.401Z",
+  "status": "CAPTURED",
+  "eci": "05"
+}
