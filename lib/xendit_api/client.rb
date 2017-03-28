@@ -11,7 +11,7 @@ module XenditApi
     	@api_key = api_key
     	# Xendit requires us to use token in every request
     	# This is how to get the token, appending colon at the end then encode it
-      @token = Base64.encode64(api_key + ':')
+      @token = Base64.strict_encode64(api_key + ':')
       setup_connection
     end
 
