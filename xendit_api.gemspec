@@ -11,7 +11,7 @@ Gem::Specification.new do |spec|
 
   spec.summary       = %q{A ruby wrapper for Xendit API}
   spec.description   = %q{Just simple and easy to use wrapper for Xendit API in ruby}
-  spec.homepage      = "https://github.com"
+  spec.homepage      = "https://github.com/galliani/xendit_api"
   spec.license       = "MIT"
 
   # Prevent pushing this gem to RubyGems.org. To allow pushes either set the 'allowed_push_host'
