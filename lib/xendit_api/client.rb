@@ -23,23 +23,6 @@ module XenditApi
 			attrs = JSON.parse(response.body)
       XenditApi::Entities::CashAccount.new(attrs)
     end
-    
-    def get_banks_for_disbursement
-      return nil if @api_key.empty?
-
-      response = make_request(
-        'available_disbursements_banks', 'get'
-      )
-
-      elements = JSON.parse(response.body)
-      banks = []
-
-      elements.each do |element| 
-        banks << XenditApi::Entities::Bank.new(element)
-      end
-
-      banks
-    end
 
     def get_bank_account_data(account_number:, bank_code:)
       return nil if @api_key.empty?
@@ -79,6 +62,56 @@ module XenditApi
       XenditApi::Entities::Invoice.new(attrs)
     end
 
+    def create_fixed_virtual_account(external_id:, bank_code:, name:, virtual_account_number:)
+      return nil if @api_key.empty?
+
+      data = { 
+        external_id: external_id, 
+        bank_code: bank_code, 
+        name: name, 
+        virtual_account_number: virtual_account_number
+      }
+      
+      response = make_request('callback_virtual_accounts', 'post', data)
+
+      attrs = JSON.parse(response.body)
+      XenditApi::Entities::VirtualAccount.new(attrs)
+    end
+
+    def get_banks_for_virtual_account
+      return nil if @api_key.empty?
+
+      response = make_request(
+        'available_virtual_account_banks', 'get'
+      )
+
+      elements = JSON.parse(response.body)
+      banks = []
+
+      elements.each do |element| 
+        banks << XenditApi::Entities::Bank.new(element)
+      end
+
+      banks
+    end
+
+    def get_banks_for_disbursement
+      return nil if @api_key.empty?
+
+      response = make_request(
+        'available_disbursements_banks', 'get'
+      )
+
+      elements = JSON.parse(response.body)
+      banks = []
+
+      elements.each do |element| 
+        banks << XenditApi::Entities::Bank.new(element)
+      end
+
+      banks
+    end
+
     def get_disbursement(id:)
       return nil if @api_key.empty?
 
@@ -111,22 +144,6 @@ module XenditApi
 
       attrs = JSON.parse(response.body)
       XenditApi::Entities::Disbursement.new(attrs)
-    end
-
-    def create_fixed_virtual_account(external_id:, bank_code:, name:, virtual_account_number:)
-      return nil if @api_key.empty?
-
-      data = { 
-        external_id: external_id, 
-        bank_code: bank_code, 
-        name: name, 
-        virtual_account_number: virtual_account_number
-      }
-      
-      response = make_request('callback_virtual_accounts', 'post', data)
-
-      attrs = JSON.parse(response.body)
-      XenditApi::Entities::VirtualAccount.new(attrs)
     end
 
     def charge_credit_card(external_id:, token:, amount:)

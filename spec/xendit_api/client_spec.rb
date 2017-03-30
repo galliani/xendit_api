@@ -9,7 +9,7 @@ module XenditApi
       client = Client.new(api_key: api_key)
 
       appended_api_key = api_key + ':'
-      tokenized_api_key = Base64.encode64(appended_api_key)
+      tokenized_api_key = Base64.strict_encode64(appended_api_key)
 
       expect(client.token).to eq tokenized_api_key 
     end
@@ -265,10 +265,42 @@ module XenditApi
       end    
     end
 
+    describe '.get_banks_for_virtual_account' do
+      context 'valid request' do
+        before do
+          data = read_file_fixture('banks.json')
+          @parsed_data = JSON.parse(data)          
+          @stub = stub_request(:get, "https://api.xendit.co/available_virtual_account_banks")
+            .to_return(:status => 200, :body => data, :headers => {})
+        end
+
+        it 'should return an array of banks' do
+          api_key = 'xnd_development_P4qDfOss0OCpl8RSiCwZ3jw=='
+          client =  Client.new(api_key: api_key)
+
+          result = client.get_banks_for_virtual_account
+
+          expect(result.class.name).to eq 'Array'
+          expect(result.first.class.name).to eq 'XenditApi::Entities::Bank'
+          expect(@stub).to have_been_requested
+        end
+      end
+
+      context 'no token provided' do
+        it 'should return authentication failed as the response' do
+          client =  Client.new(api_key: '')
+
+          result = client.get_banks_for_virtual_account
+
+          expect(result).to eq nil
+        end
+      end    
+    end       
+
     describe '.get_banks_for_disbursement' do
       context 'valid request' do
         before do
-          data = read_file_fixture('banks_for_disbursement.json')
+          data = read_file_fixture('banks.json')
           @parsed_data = JSON.parse(data)          
           @stub = stub_request(:get, "https://api.xendit.co/available_disbursements_banks")
             .to_return(:status => 200, :body => data, :headers => {})
