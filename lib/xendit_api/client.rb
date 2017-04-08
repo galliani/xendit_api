@@ -166,9 +166,10 @@ module XenditApi
     def setup_connection
      # start setting up connections
       @connection = Faraday.new(url: XenditApi::BASE_URL) do |faraday|
-        faraday.response :logger                  # log requests to STDOUT
-        faraday.adapter  Faraday.default_adapter  # make requests with Net::HTTP
         faraday.use FaradayMiddleware::RaiseHttpException
+        faraday.response :logger                  # log requests to STDOUT
+        faraday.request :url_encoded
+        faraday.adapter  Faraday.default_adapter  # make requests with Net::HTTP
       end
 
       @connection.authorization(:Basic, @token)
