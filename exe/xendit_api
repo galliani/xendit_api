@@ -1,9 +1,0 @@
-#!/usr/exe/env ruby
-#  allow execution of the script using the command chmod +x exe/xendit_api (assuming you’re on Linux or OSX)
-
-# This exe is isolated from the gem, so we need to manually require the file(s) that are going to be used
-require_relative "../lib/xendit_api.rb"
-require_relative "../lib/xendit_api/client"
-
-balance = XenditApi::Client.new(api_key: 'xnd_development_OYGFfORw0LSql8JrLOAeTjKVYdGg94F+wSbj+R1q/WbS8LOiBAF2hQ==').get_cash_balance
-puts balance
