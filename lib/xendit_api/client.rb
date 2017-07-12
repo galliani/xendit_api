@@ -4,23 +4,23 @@ require "faraday_middleware"
 require "json"
 
 module XenditApi
-	class Client
-		attr_reader :token
+  class Client
+    attr_reader :token
 
     def initialize(api_key:)
-    	@api_key = api_key
-    	# Xendit requires us to use token in every request
-    	# This is how to get the token, appending colon at the end then encode it
+      @api_key = api_key
+      # Xendit requires us to use token in every request
+      # This is how to get the token, appending colon at the end then encode it
       @token = Base64.strict_encode64(api_key + ':')
       setup_connection
     end
 
     def get_cash_balance
-    	return nil if @api_key.empty?
+      return nil if @api_key.empty?
 
-			response = make_request('balance', 'get', {})
+      response = make_request('balance', 'get', {})
 
-			attrs = JSON.parse(response.body)
+      attrs = JSON.parse(response.body)
       XenditApi::Entities::CashAccount.new(attrs)
     end
 
@@ -182,5 +182,5 @@ module XenditApi
 
       @connection.get endpoint
     end
-	end
+  end
 end

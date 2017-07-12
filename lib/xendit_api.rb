@@ -9,6 +9,6 @@ module XenditApi
   BASE_VERSION = '0'
 
   def self.base_url
-  	@base_url = BASE_URL
+    @base_url = BASE_URL
   end
 end

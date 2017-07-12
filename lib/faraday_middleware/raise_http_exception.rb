@@ -1,8 +1,6 @@
 require 'faraday'
 
-# @private
 module FaradayMiddleware
-  # @private
   class RaiseHttpException < Faraday::Middleware
     def call(env)
       @app.call(env).on_complete do |response|
