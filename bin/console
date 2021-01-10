@@ -10,5 +10,8 @@ require "xendit_api"
 # require "pry"
 # Pry.start
 
+# NOTE: run this console with this command on terminal
+# irb -I lib
+
 require "irb"
 IRB.start
