@@ -8,3 +8,4 @@
 /spec/reports/
 /tmp/
 /exe/xendit_api
+.byebug_history

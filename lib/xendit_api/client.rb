@@ -5,7 +5,7 @@ require "json"
 
 module XenditApi
   class Client
-    attr_reader :token
+    attr_reader :token, :error
 
     def initialize(api_key:)
       @api_key = api_key
@@ -62,17 +62,27 @@ module XenditApi
       XenditApi::Entities::Invoice.new(attrs)
     end
 
-    def create_fixed_virtual_account(external_id:, bank_code:, name:, virtual_account_number:)
+    def create_fixed_virtual_account(external_id:, bank_code:, name:, virtual_account_number: nil)
       return nil if @api_key.empty?
 
       data = { 
-        external_id: external_id, 
-        bank_code: bank_code, 
-        name: name, 
-        virtual_account_number: virtual_account_number
+        external_id:  external_id, 
+        bank_code:    bank_code, 
+        name:         name
       }
-      
+      data[:virtual_account_number] = virtual_account_number unless virtual_account_number.nil?
+
       response = make_request('callback_virtual_accounts', 'post', data)
+
+      attrs = JSON.parse(response.body)
+      XenditApi::Entities::VirtualAccount.new(attrs)
+    end
+
+    def get_virtual_account(id:)
+      return nil if @api_key.empty?
+
+      path = 'callback_virtual_accounts/' + id.to_s
+      response = make_request(path, 'get')
 
       attrs = JSON.parse(response.body)
       XenditApi::Entities::VirtualAccount.new(attrs)

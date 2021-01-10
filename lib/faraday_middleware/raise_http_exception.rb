@@ -31,7 +31,7 @@ module FaradayMiddleware
     private
 
     def error_message_400(response)
-      "#{response[:method].to_s.upcase} #{response[:url].to_s}: #{response[:status]}#{error_body(response[:body])}"
+      "#{response[:method].to_s.upcase} #{response[:url].to_s}: #{response[:status]} | #{error_body(response[:body])}"
     end
 
     def error_body(body)
@@ -43,10 +43,11 @@ module FaradayMiddleware
 
       if body.nil?
         nil
-      elsif body['meta'] and body['meta']['error_message'] and not body['meta']['error_message'].empty?
-        ": #{body['meta']['error_message']}"
-      elsif body['error_message'] and not body['error_message'].empty?
-        ": #{body['error_type']}: #{body['error_message']}"
+      else
+        errors = body["errors"]
+        return nil if errors.count.zero?
+
+        errors.map { |x| x["messages"] }.join(',')
       end
     end
 
